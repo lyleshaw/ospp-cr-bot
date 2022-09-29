@@ -1,6 +1,6 @@
 ARG GO_VERSION=1.17
 
-FROM golang:${GO_VERSION}-alpine AS builder
+FROM --platform=linux/amd64 golang:${GO_VERSION}-alpine AS builder
 
 RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
 
@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 RUN go build -o ./server ./cmd/main.go
 
-FROM alpine:latest
+FROM --platform=linux/amd64 alpine:latest
 
 WORKDIR /
 COPY --from=builder /builder/server .
