@@ -16,11 +16,15 @@ RUN go build -o ./server ./cmd/main.go
 
 FROM alpine:latest
 
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-
 WORKDIR /
 COPY --from=builder /builder/server .
-COPY --from=builder /builder/common.yaml .
-COPY --from=builder /builder/.env .
+
+WORKDIR /
+COPY --from=builder /builder/common.yaml common.yaml
+
+WORKDIR /
+COPY --from=builder /builder/.env .env
 
 EXPOSE 9000
+
+CMD ["./server"]
